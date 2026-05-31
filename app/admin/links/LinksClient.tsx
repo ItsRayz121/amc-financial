@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 import { Tabs } from '@/components/ui/Tabs'
 import { Toggle } from '@/components/ui/Toggle'
 import { Modal } from '@/components/ui/Modal'
+import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
@@ -144,7 +145,9 @@ export function LinksClient({ links, role }: LinksClientProps) {
   const [addingNew, setAddingNew] = useState(false)
   const [localLinks, setLocalLinks] = useState(links)
   const [isPending, startTransition] = useTransition()
-  const [isActiveState, setIsActiveState] = useState(true)
+  const [editActiveState, setEditActiveState] = useState(true)
+  const [addActiveState, setAddActiveState] = useState(true)
+  const [confirmDelete, setConfirmDelete] = useState<{ id: string; label: string } | null>(null)
 
   const canEdit = role === 'super_admin' || role === 'editor'
 
@@ -161,7 +164,7 @@ export function LinksClient({ links, role }: LinksClientProps) {
   })
 
   function openEdit(link: SiteLink) {
-    setIsActiveState(link.is_active)
+    setEditActiveState(link.is_active)
     setEditingLink(link)
     editForm.reset({
       label: link.label,
@@ -174,7 +177,7 @@ export function LinksClient({ links, role }: LinksClientProps) {
   }
 
   function openAdd() {
-    setIsActiveState(true)
+    setAddActiveState(true)
     addForm.reset({ is_active: true, sort_order: filteredLinks.length + 1, category: activeTab })
     setAddingNew(true)
   }
@@ -195,7 +198,13 @@ export function LinksClient({ links, role }: LinksClientProps) {
   }
 
   async function handleDelete(id: string, label: string) {
-    if (!confirm(`Delete "${label}"? This cannot be undone.`)) return
+    setConfirmDelete({ id, label })
+  }
+
+  async function confirmDeleteAction() {
+    if (!confirmDelete) return
+    const { id, label } = confirmDelete
+    setConfirmDelete(null)
     const res = await fetch(`/api/admin/links/${id}`, { method: 'DELETE' })
     if (!res.ok) {
       toast.error('Failed to delete link')
@@ -211,7 +220,7 @@ export function LinksClient({ links, role }: LinksClientProps) {
       const res = await fetch(`/api/admin/links/${editingLink.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, is_active: isActiveState }),
+        body: JSON.stringify({ ...data, is_active: editActiveState }),
       })
       if (!res.ok) { toast.error('Failed to save'); return }
       const updated = await res.json()
@@ -226,7 +235,7 @@ export function LinksClient({ links, role }: LinksClientProps) {
       const res = await fetch('/api/admin/links', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, is_active: isActiveState }),
+        body: JSON.stringify({ ...data, is_active: addActiveState }),
       })
       if (!res.ok) { toast.error('Failed to create link'); return }
       const created = await res.json()
@@ -243,12 +252,16 @@ export function LinksClient({ links, role }: LinksClientProps) {
     onCancel,
     submitLabel,
     showCategory,
+    activeState,
+    setActiveState,
   }: {
     form: ReturnType<typeof useForm<LinkFormData>>
     onSubmit: (d: LinkFormData) => void
     onCancel: () => void
     submitLabel: string
     showCategory?: boolean
+    activeState: boolean
+    setActiveState: (v: boolean) => void
   }) => (
     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
       {showCategory && (
@@ -285,8 +298,8 @@ export function LinksClient({ links, role }: LinksClientProps) {
           <p className="text-xs text-text-muted font-sans mt-0.5">Show this link on the public site</p>
         </div>
         <Toggle
-          checked={isActiveState}
-          onChange={setIsActiveState}
+          checked={activeState}
+          onChange={setActiveState}
           label="Active"
         />
       </div>
@@ -379,6 +392,8 @@ export function LinksClient({ links, role }: LinksClientProps) {
           onSubmit={onEdit}
           onCancel={() => setEditingLink(null)}
           submitLabel="Save Changes"
+          activeState={editActiveState}
+          setActiveState={setEditActiveState}
         />
       </Modal>
 
@@ -396,8 +411,21 @@ export function LinksClient({ links, role }: LinksClientProps) {
           onCancel={() => setAddingNew(false)}
           submitLabel="Add Link"
           showCategory
+          activeState={addActiveState}
+          setActiveState={setAddActiveState}
         />
       </Modal>
+
+      {/* Delete confirmation modal */}
+      <ConfirmModal
+        open={!!confirmDelete}
+        title="Delete Link"
+        message={`Delete "${confirmDelete?.label}"? This cannot be undone.`}
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={confirmDeleteAction}
+        onCancel={() => setConfirmDelete(null)}
+      />
     </>
   )
 }

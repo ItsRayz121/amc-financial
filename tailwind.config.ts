@@ -10,15 +10,27 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Base backgrounds
+        // Semantic backgrounds — driven by CSS variables, adapt to theme automatically
+        // Variables are stored as RGB channels (e.g. "10 15 30") so opacity modifiers work
         base: {
-          DEFAULT: '#0a0f1e',
-          surface: '#111827',
-          elevated: '#1a2234',
-          border: '#1f2d47',
-          'border-subtle': '#162033',
+          DEFAULT: 'rgb(var(--color-bg))',
+          surface: 'rgb(var(--color-surface))',
+          elevated: 'rgb(var(--color-elevated))',
+          border: 'rgb(var(--color-border))',
+          'border-subtle': 'rgb(var(--color-border-subtle))',
         },
-        // Light mode
+        // Semantic text — CSS variables
+        text: {
+          primary: 'rgb(var(--color-text-primary))',
+          secondary: 'rgb(var(--color-text-secondary))',
+          muted: 'rgb(var(--color-text-muted))',
+          inverse: '#0f172a',
+          // Keep light-* for any explicit overrides
+          'light-primary': '#0f172a',
+          'light-secondary': '#475569',
+          'light-muted': '#94a3b8',
+        },
+        // Static light palette (for explicit light-only usage)
         light: {
           DEFAULT: '#f8f9fb',
           surface: '#ffffff',
@@ -26,17 +38,7 @@ const config: Config = {
           border: '#e2e8f0',
           'border-subtle': '#edf2f7',
         },
-        // Text
-        text: {
-          primary: '#f1f5f9',
-          secondary: '#94a3b8',
-          muted: '#64748b',
-          inverse: '#0f172a',
-          'light-primary': '#0f172a',
-          'light-secondary': '#475569',
-          'light-muted': '#94a3b8',
-        },
-        // Accent — refined gold
+        // Accent — refined gold (static, same in both themes)
         gold: {
           DEFAULT: '#c9a84c',
           light: '#e2c56e',
@@ -44,7 +46,7 @@ const config: Config = {
           muted: 'rgba(201,168,76,0.15)',
           'muted-hover': 'rgba(201,168,76,0.25)',
         },
-        // Status
+        // Status (static)
         emerald: {
           DEFAULT: '#10b981',
           light: '#34d399',
@@ -95,8 +97,8 @@ const config: Config = {
         '4xl': '2rem',
       },
       boxShadow: {
-        'card': '0 1px 3px 0 rgba(0,0,0,0.4), 0 1px 2px -1px rgba(0,0,0,0.4)',
-        'card-hover': '0 10px 25px -5px rgba(0,0,0,0.5), 0 8px 10px -6px rgba(0,0,0,0.4)',
+        'card': '0 1px 3px 0 rgba(0,0,0,0.08), 0 1px 2px -1px rgba(0,0,0,0.08)',
+        'card-hover': '0 10px 25px -5px rgba(0,0,0,0.15), 0 8px 10px -6px rgba(0,0,0,0.1)',
         'gold': '0 0 20px rgba(201,168,76,0.2)',
         'gold-strong': '0 0 30px rgba(201,168,76,0.35)',
         'inner-subtle': 'inset 0 1px 0 rgba(255,255,255,0.05)',

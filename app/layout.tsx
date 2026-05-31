@@ -3,6 +3,8 @@ import { Inter, Playfair_Display } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Providers } from './providers'
 import { SITE_CONFIG } from '@/config/site'
+// Run: npm install @vercel/analytics
+import { Analytics } from '@vercel/analytics/react'
 import '@/styles/globals.css'
 
 const inter = Inter({
@@ -87,6 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </head>
         <body className="antialiased">
           <Providers>{children}</Providers>
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>

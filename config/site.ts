@@ -32,7 +32,7 @@ export const SITE_CONFIG = {
   social: {
     whatsapp: 'https://whatsapp.com/channel/0029Va8axQ6HQbSAok7MRS0O',
     telegram: 'https://t.me/aasimmajeedkhawaja',
-    instagram: 'https://www.instagram.com/reel/DY8mcLEIxiI/?igsh=NWxlY20xbHU5ZGRs',
+    instagram: 'https://www.instagram.com/aasimmajeedamc/',
     youtube: 'https://youtube.com/live/MNsdGMnzGI4?feature=share',
   },
   affiliates: {
@@ -44,7 +44,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'About', href: '#about' },
   { label: 'Communities', href: '#communities' },
   { label: 'Courses', href: '#courses' },
-  { label: 'Partners', href: '#partners' },
+  { label: 'Platforms', href: '#partners' },
   { label: 'Support', href: '#support' },
 ]
 

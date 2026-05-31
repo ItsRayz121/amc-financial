@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react'
 import { Menu, Sun, Moon } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useScrollSpy } from '@/hooks/useScrollSpy'
+import { ScrollProgress } from '@/components/common/ScrollProgress'
 import { NAV_ITEMS, SITE_CONFIG } from '@/config/site'
-import { Button } from '@/components/ui/Button'
+import { LinkButton } from '@/components/ui/LinkButton'
 import { MobileDrawer } from './MobileDrawer'
 import { cn } from '@/utils/cn'
 
@@ -18,8 +19,9 @@ export function Header() {
   const { theme, setTheme } = useTheme()
   const activeId = useScrollSpy(SECTION_IDS)
 
+  useEffect(() => { setMounted(true) }, [])
+
   useEffect(() => {
-    setMounted(true)
     const onScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
@@ -27,6 +29,7 @@ export function Header() {
 
   return (
     <>
+      <ScrollProgress />
       <a href="#main" className="skip-link">
         Skip to main content
       </a>
@@ -34,15 +37,13 @@ export function Header() {
       <header
         className={cn(
           'fixed top-0 left-0 right-0 z-30 transition-all duration-350',
-          scrolled ? 'glass-dark py-3' : 'py-5',
-          'dark:glass-dark',
-          !scrolled && 'bg-transparent'
+          scrolled ? 'glass-nav py-3' : 'py-5 bg-transparent'
         )}
       >
         <div className="section-container flex items-center justify-between">
           {/* Logo */}
           <a
-            href="#"
+            href="/"
             className="font-display text-2xl font-bold tracking-tight"
             aria-label="Aasim Majeed AMC — Home"
           >
@@ -85,15 +86,16 @@ export function Header() {
               </button>
             )}
 
-            {/* CTA */}
-            <Button
+            {/* CTA — proper anchor tag, no window.open */}
+            <LinkButton
+              href={SITE_CONFIG.social.whatsapp}
               variant="gold"
               size="sm"
               className="hidden md:inline-flex"
-              onClick={() => window.open(SITE_CONFIG.social.whatsapp, '_blank', 'noopener,noreferrer')}
+              aria-label="Join WhatsApp Community — opens in new tab"
             >
-              Join Community
-            </Button>
+              Join Free
+            </LinkButton>
 
             {/* Hamburger */}
             <button

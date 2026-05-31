@@ -1,4 +1,3 @@
-import { Sun, Moon } from 'lucide-react'
 import { SITE_CONFIG, NAV_ITEMS, isPlaceholderUrl } from '@/config/site'
 
 function SocialIcon({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
@@ -148,10 +147,15 @@ export function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-base-border">
-        <div className="section-container py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="section-container py-5 flex flex-col sm:flex-row items-center justify-between gap-3 flex-wrap">
           <p className="text-xs text-text-muted font-sans text-center sm:text-left">
-            © 2025 Aasim Majeed AMC. All Rights Reserved.
+            © {new Date().getFullYear()} Aasim Majeed AMC. All Rights Reserved.
           </p>
+          <div className="flex items-center gap-4">
+            <a href="/privacy" className="text-xs text-text-muted hover:text-gold font-sans transition-colors duration-250">Privacy Policy</a>
+            <a href="/terms" className="text-xs text-text-muted hover:text-gold font-sans transition-colors duration-250">Terms</a>
+            <a href="/terms#disclaimer" className="text-xs text-text-muted hover:text-gold font-sans transition-colors duration-250">Disclaimer</a>
+          </div>
           <p className="text-xs text-text-muted font-sans text-center sm:text-right">
             Trading involves risk. Content is for educational purposes only.
           </p>

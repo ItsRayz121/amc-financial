@@ -3,7 +3,7 @@
 import { ExternalLink, Users, Zap } from 'lucide-react'
 import { ScrollReveal } from '@/components/common/ScrollReveal'
 import { SectionHeader } from '@/components/common/SectionHeader'
-import { Button } from '@/components/ui/Button'
+import { LinkButton } from '@/components/ui/LinkButton'
 import { Badge } from '@/components/ui/Badge'
 import { isPlaceholderUrl } from '@/config/site'
 import { cn } from '@/utils/cn'
@@ -70,7 +70,6 @@ function PlatformIcon({ communityKey }: { communityKey: string }) {
 }
 
 function CommunityCard({ link }: { link: SiteLink }) {
-  const isPlaceholder = isPlaceholderUrl(link.url)
   const styles = getPlatformStyles(link.key)
 
   const cardContent = (
@@ -78,9 +77,8 @@ function CommunityCard({ link }: { link: SiteLink }) {
       className={cn(
         'card-dark rounded-2xl p-6 flex flex-col h-full',
         'transition-all duration-350',
-        !isPlaceholder && 'hover:-translate-y-1 hover:shadow-card-hover glow-gold-hover',
+        'hover:-translate-y-1 hover:shadow-card-hover glow-gold-hover',
         styles.borderHover,
-        isPlaceholder && 'opacity-60'
       )}
     >
       <div className="flex items-start justify-between gap-4 mb-4">
@@ -93,7 +91,6 @@ function CommunityCard({ link }: { link: SiteLink }) {
             {styles.memberBadge}
           </Badge>
         )}
-        {isPlaceholder && <Badge variant="warning">Coming Soon</Badge>}
       </div>
 
       <h3 className="font-display text-lg font-semibold text-text-primary mb-2">{link.label}</h3>
@@ -101,18 +98,16 @@ function CommunityCard({ link }: { link: SiteLink }) {
         {link.description}
       </p>
 
-      {!isPlaceholder && (
-        <Button
-          variant={styles.btnVariant}
-          size="sm"
-          className="w-full"
-          onClick={() => window.open(link.url, '_blank', 'noopener,noreferrer')}
-          aria-label={`Join ${link.label} — opens in new tab`}
-        >
-          Join {link.label.split(' ')[0]}
-          <ExternalLink size={14} aria-hidden="true" />
-        </Button>
-      )}
+      <LinkButton
+        href={link.url}
+        variant={styles.btnVariant}
+        size="sm"
+        className="w-full justify-center"
+        aria-label={`Join ${link.label} — opens in new tab`}
+      >
+        Join {link.label.split(' ')[0]}
+        <ExternalLink size={14} aria-hidden="true" />
+      </LinkButton>
     </div>
   )
 
@@ -120,7 +115,9 @@ function CommunityCard({ link }: { link: SiteLink }) {
 }
 
 export function Communities({ links }: CommunitiesProps) {
-  const communityLinks = links.filter((l) => l.category === 'community').slice(0, 4)
+  const communityLinks = links
+    .filter((l) => l.category === 'community')
+    .filter((l) => !isPlaceholderUrl(l.url))
 
   return (
     <section id="communities" className="section-padding bg-base-surface" aria-labelledby="communities-heading">
@@ -135,7 +132,12 @@ export function Communities({ links }: CommunitiesProps) {
           />
         </ScrollReveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className={cn(
+          'grid gap-5',
+          communityLinks.length <= 2 ? 'grid-cols-1 sm:grid-cols-2' :
+          communityLinks.length === 3 ? 'grid-cols-1 sm:grid-cols-3' :
+          'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
+        )}>
           {communityLinks.map((link, i) => (
             <ScrollReveal key={link.id} delay={i * 0.08}>
               <CommunityCard link={link} />

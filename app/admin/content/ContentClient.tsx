@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { Save, Hash } from 'lucide-react'
 import { toast } from 'sonner'
 import { Tabs } from '@/components/ui/Tabs'
@@ -31,13 +31,15 @@ function ContentField({
   onSave: (id: string, value: string) => void
 }) {
   const [value, setValue] = useState(item.value)
-  const [isPending, startTransition] = useTransition()
-  const isDirty = value !== item.value
+  const [savedValue, setSavedValue] = useState(item.value)
+  const [isSaving, setIsSaving] = useState(false)
+  const isDirty = value !== savedValue
 
-  function handleSave() {
-    startTransition(async () => {
-      await onSave(item.id, value)
-    })
+  async function handleSave() {
+    setIsSaving(true)
+    await onSave(item.id, value)
+    setSavedValue(value)
+    setIsSaving(false)
   }
 
   return (
@@ -87,7 +89,7 @@ function ContentField({
             variant="gold"
             size="sm"
             onClick={handleSave}
-            loading={isPending}
+            loading={isSaving}
           >
             <Save size={14} aria-hidden="true" />
             Save

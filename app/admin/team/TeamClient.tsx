@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { ROLE_LABELS, ROLE_DESCRIPTIONS } from '@/config/roles'
 import type { AdminRoleRecord, AdminRole } from '@/types/database'
 
@@ -30,6 +31,7 @@ export function TeamClient({ admins: initialAdmins }: TeamClientProps) {
   const [admins, setAdmins] = useState(initialAdmins)
   const [inviteEmail, setInviteEmail] = useState('')
   const [isPending, startTransition] = useTransition()
+  const [confirmRevoke, setConfirmRevoke] = useState<{ clerkUserId: string; email: string | null } | null>(null)
 
   async function handleInvite() {
     if (!inviteEmail.trim() || !inviteEmail.includes('@')) {
@@ -75,8 +77,14 @@ export function TeamClient({ admins: initialAdmins }: TeamClientProps) {
     }
   }
 
-  async function handleRevoke(clerkUserId: string, email: string | null) {
-    if (!confirm(`Remove admin access for ${email ?? clerkUserId}?`)) return
+  function handleRevoke(clerkUserId: string, email: string | null) {
+    setConfirmRevoke({ clerkUserId, email })
+  }
+
+  async function confirmRevokeAction() {
+    if (!confirmRevoke) return
+    const { clerkUserId } = confirmRevoke
+    setConfirmRevoke(null)
 
     const res = await fetch(`/api/admin/team/${clerkUserId}`, { method: 'DELETE' })
 
@@ -193,6 +201,16 @@ export function TeamClient({ admins: initialAdmins }: TeamClientProps) {
           </table>
         </div>
       </div>
+
+      <ConfirmModal
+        open={!!confirmRevoke}
+        title="Revoke Admin Access"
+        message={`Remove admin access for ${confirmRevoke?.email ?? confirmRevoke?.clerkUserId}? This will immediately block their access to the admin panel.`}
+        confirmLabel="Revoke Access"
+        variant="danger"
+        onConfirm={confirmRevokeAction}
+        onCancel={() => setConfirmRevoke(null)}
+      />
     </div>
   )
 }

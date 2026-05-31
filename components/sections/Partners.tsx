@@ -3,8 +3,8 @@
 import { ExternalLink, TrendingUp, BarChart2, Activity, BarChart, DollarSign } from 'lucide-react'
 import { ScrollReveal } from '@/components/common/ScrollReveal'
 import { SectionHeader } from '@/components/common/SectionHeader'
-import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { LinkButton } from '@/components/ui/LinkButton'
 import { isPlaceholderUrl } from '@/config/site'
 import { cn } from '@/utils/cn'
 import type { SiteLink } from '@/types/database'
@@ -29,8 +29,15 @@ const PARTNER_SUBTITLES: Record<string, string> = {
   affiliate_exness: 'Forex Broker',
 }
 
+const PARTNER_TRUST: Record<string, { regulation: string; users: string }> = {
+  affiliate_bitget: { regulation: 'Licensed Exchange', users: '25M+ Users' },
+  affiliate_okx: { regulation: 'Licensed Exchange', users: '50M+ Users' },
+  affiliate_binance: { regulation: 'Licensed Exchange', users: '170M+ Users' },
+  affiliate_bybit: { regulation: 'Licensed Exchange', users: '30M+ Users' },
+  affiliate_exness: { regulation: 'FCA/CySEC Regulated', users: '500K+ Clients' },
+}
+
 function PartnerCard({ link }: { link: SiteLink }) {
-  const isPlaceholder = isPlaceholderUrl(link.url)
   const icon = PARTNER_ICONS[link.key] ?? <BarChart2 size={24} aria-hidden="true" />
   const subtitle = PARTNER_SUBTITLES[link.key] ?? 'Trading Platform'
   const isBitget = link.key === 'affiliate_bitget'
@@ -40,8 +47,7 @@ function PartnerCard({ link }: { link: SiteLink }) {
       className={cn(
         'card-dark rounded-2xl p-6 flex flex-col',
         'transition-all duration-350',
-        !isPlaceholder && 'hover:-translate-y-1 hover:shadow-card-hover glow-gold-hover',
-        isPlaceholder && 'opacity-55',
+        'hover:-translate-y-1 hover:shadow-card-hover glow-gold-hover',
         isBitget && 'ring-1 ring-gold/20'
       )}
     >
@@ -51,38 +57,45 @@ function PartnerCard({ link }: { link: SiteLink }) {
         </div>
         <div className="flex flex-col items-end gap-1.5">
           {isBitget && <Badge variant="gold">Recommended</Badge>}
-          {isPlaceholder && <Badge variant="warning">Coming Soon</Badge>}
         </div>
       </div>
 
       <h3 className="font-display text-lg font-semibold text-text-primary mb-0.5">{link.label}</h3>
       <p className="text-xs text-text-muted font-sans mb-3">{subtitle}</p>
+
+      {PARTNER_TRUST[link.key] && (
+        <div className="flex flex-wrap gap-1.5 mb-3">
+          <span className="text-xs font-sans text-emerald bg-emerald-muted border border-emerald/20 px-2 py-0.5 rounded-full">
+            {PARTNER_TRUST[link.key].regulation}
+          </span>
+          <span className="text-xs font-sans text-text-muted bg-base-elevated border border-base-border px-2 py-0.5 rounded-full">
+            {PARTNER_TRUST[link.key].users}
+          </span>
+        </div>
+      )}
+
       <p className="text-sm text-text-secondary font-sans leading-relaxed flex-1 mb-5">
         {link.description}
       </p>
 
-      {!isPlaceholder ? (
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-full"
-          onClick={() => window.open(link.url, '_blank', 'noopener,noreferrer')}
-          aria-label={`Open free account at ${link.label} — opens in new tab`}
-        >
-          Open Free Account
-          <ExternalLink size={13} aria-hidden="true" />
-        </Button>
-      ) : (
-        <div className="flex items-center justify-center py-2 px-4 rounded-xl border border-dashed border-base-border text-xs text-text-muted font-sans">
-          Link coming soon
-        </div>
-      )}
+      <LinkButton
+        href={link.url}
+        variant="outline"
+        size="sm"
+        className="w-full justify-center"
+        aria-label={`Open free account at ${link.label} — opens in new tab`}
+      >
+        Open Free Account
+        <ExternalLink size={13} aria-hidden="true" />
+      </LinkButton>
     </div>
   )
 }
 
 export function Partners({ links }: PartnersProps) {
-  const affiliateLinks = links.filter((l) => l.category === 'affiliate')
+  const affiliateLinks = links
+    .filter((l) => l.category === 'affiliate')
+    .filter((l) => !isPlaceholderUrl(l.url))
 
   return (
     <section id="partners" className="section-padding" aria-labelledby="partners-heading">
@@ -97,7 +110,24 @@ export function Partners({ links }: PartnersProps) {
           </div>
         </ScrollReveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
+        <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-warning/5 border border-warning/20 mb-8">
+          <svg className="w-4 h-4 text-warning shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 110 20A10 10 0 0112 2z" />
+          </svg>
+          <p className="text-xs text-text-muted font-sans leading-relaxed">
+            The platforms below are affiliate partners — we earn a commission when you register, at no cost to you. This supports free education for everyone.{' '}
+            <a href="/terms#affiliates" className="text-gold hover:text-gold-light underline underline-offset-2 transition-colors">
+              Learn more
+            </a>
+          </p>
+        </div>
+
+        <div className={cn(
+          'grid gap-5',
+          affiliateLinks.length <= 3
+            ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+            : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'
+        )}>
           {affiliateLinks.map((link, i) => (
             <ScrollReveal key={link.id} delay={i * 0.07}>
               <PartnerCard link={link} />

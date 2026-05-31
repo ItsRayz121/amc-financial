@@ -13,13 +13,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
     >
       {children}
       <Toaster
-        theme="dark"
         position="top-right"
         toastOptions={{
-          style: {
-            background: 'hsl(220 40% 13%)',
-            border: '1px solid hsl(220 40% 20%)',
-            color: 'hsl(214 32% 91%)',
+          classNames: {
+            toast: 'bg-base-surface border border-base-border text-text-primary font-sans',
+            title: 'text-text-primary',
+            description: 'text-text-secondary',
           },
         }}
       />

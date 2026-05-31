@@ -1,18 +1,29 @@
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { createClient as createSupabaseClient, type SupabaseClient } from '@supabase/supabase-js'
 import type { SiteLink, SiteContent, AdminRoleRecord, AdminActivity, SiteLinkCategory } from '@/types/database'
 
-function publicClient() {
-  return createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+type AnySupabaseClient = SupabaseClient<any>
+
+let _public: AnySupabaseClient | null = null
+let _admin: AnySupabaseClient | null = null
+
+function publicClient(): AnySupabaseClient {
+  if (!_public) {
+    _public = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+  }
+  return _public
 }
 
-function adminClient() {
-  return createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
+function adminClient(): AnySupabaseClient {
+  if (!_admin) {
+    _admin = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+  }
+  return _admin
 }
 
 // ─── Public queries ───────────────────────────────────────────────────────────

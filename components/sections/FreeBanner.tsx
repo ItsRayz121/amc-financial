@@ -20,7 +20,7 @@ export function FreeBanner() {
             Our Commitment
           </div>
 
-          <h2 className="font-display text-display-lg md:text-display-xl font-bold mb-6 leading-tight">
+          <h2 className="font-display text-display-sm sm:text-display-md md:text-display-lg lg:text-display-xl font-bold mb-6 leading-tight">
             Everything Here Is{' '}
             <span className="text-gold-gradient">Free. Always.</span>
           </h2>

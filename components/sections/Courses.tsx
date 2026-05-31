@@ -1,10 +1,11 @@
 'use client'
 
+import Image from 'next/image'
 import { Play, BookOpen, TrendingUp, ExternalLink } from 'lucide-react'
 import { ScrollReveal } from '@/components/common/ScrollReveal'
 import { SectionHeader } from '@/components/common/SectionHeader'
-import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { LinkButton } from '@/components/ui/LinkButton'
 import { isPlaceholderUrl } from '@/config/site'
 import { cn } from '@/utils/cn'
 import type { SiteLink } from '@/types/database'
@@ -42,8 +43,21 @@ function CourseIcon({ courseKey }: { courseKey: string }) {
   return <TrendingUp size={20} aria-hidden="true" />
 }
 
+function extractYouTubeId(url: string): string | null {
+  try {
+    const u = new URL(url)
+    // youtube.com/watch?v=ID or youtu.be/ID or youtube.com/live/ID
+    if (u.hostname.includes('youtube.com')) {
+      return u.searchParams.get('v') ?? u.pathname.split('/').pop() ?? null
+    }
+    if (u.hostname === 'youtu.be') return u.pathname.slice(1)
+    return null
+  } catch {
+    return null
+  }
+}
+
 function CourseCard({ link, index }: { link: SiteLink; index: number }) {
-  const isPlaceholder = isPlaceholderUrl(link.url)
   const details = COURSE_DETAILS[link.key] ?? { tags: ['Free'], longDesc: link.description ?? '' }
   const isLive = link.key === 'course_live'
 
@@ -52,33 +66,43 @@ function CourseCard({ link, index }: { link: SiteLink; index: number }) {
       className={cn(
         'card-dark rounded-2xl overflow-hidden flex flex-col',
         'transition-all duration-350',
-        !isPlaceholder && 'hover:-translate-y-1 hover:shadow-card-hover glow-gold-hover',
-        isPlaceholder && 'opacity-60'
+        'hover:-translate-y-1 hover:shadow-card-hover glow-gold-hover',
       )}
     >
-      {/* Thumbnail-style header */}
-      <div className="relative bg-base-elevated h-40 flex items-center justify-center border-b border-base-border overflow-hidden">
-        {/* Background pattern */}
-        <div
-          className="absolute inset-0 opacity-30 hero-grid"
-          aria-hidden="true"
-        />
-        <div className="relative z-10 flex flex-col items-center gap-2">
-          <div className="w-14 h-14 rounded-2xl bg-gold-muted border border-gold/20 flex items-center justify-center text-gold">
-            <CourseIcon courseKey={link.key} />
-          </div>
-          {isLive && (
-            <span className="flex items-center gap-1.5 text-xs font-semibold font-sans text-danger bg-danger-muted border border-danger/20 px-2.5 py-1 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-danger animate-pulse" aria-hidden="true" />
-              LIVE
-            </span>
-          )}
-        </div>
-        {/* Course number */}
-        <span
-          className="absolute top-3 right-3 text-xs font-mono text-text-muted opacity-40"
-          aria-hidden="true"
-        >
+      {/* Thumbnail header */}
+      <div className="relative h-40 overflow-hidden border-b border-base-border bg-base-elevated">
+        {extractYouTubeId(link.url) ? (
+          <>
+            <Image
+              src={`https://img.youtube.com/vi/${extractYouTubeId(link.url)}/hqdefault.jpg`}
+              alt={`${link.label} thumbnail`}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-base/50 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-gold/90 flex items-center justify-center shadow-gold">
+                <Play size={18} className="text-[#0a0f1e] ml-0.5" fill="currentColor" aria-hidden="true" />
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 opacity-30 hero-grid" aria-hidden="true" />
+            <div className="relative z-10 flex flex-col items-center justify-center h-full gap-2">
+              <div className="w-14 h-14 rounded-2xl bg-gold-muted border border-gold/20 flex items-center justify-center text-gold">
+                <CourseIcon courseKey={link.key} />
+              </div>
+            </div>
+          </>
+        )}
+        {isLive && (
+          <span className="absolute top-3 left-3 flex items-center gap-1.5 text-xs font-semibold font-sans text-danger bg-danger-muted border border-danger/20 px-2.5 py-1 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-danger animate-pulse" aria-hidden="true" />
+            LIVE
+          </span>
+        )}
+        <span className="absolute top-3 right-3 text-xs font-mono text-text-muted opacity-40" aria-hidden="true">
           0{index + 1}
         </span>
       </div>
@@ -91,7 +115,6 @@ function CourseCard({ link, index }: { link: SiteLink; index: number }) {
               {tag}
             </Badge>
           ))}
-          {isPlaceholder && <Badge variant="warning">Coming Soon</Badge>}
         </div>
 
         <h3 className="font-display text-lg font-semibold text-text-primary mb-2 leading-snug">
@@ -101,29 +124,25 @@ function CourseCard({ link, index }: { link: SiteLink; index: number }) {
           {details.longDesc}
         </p>
 
-        {!isPlaceholder ? (
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full"
-            onClick={() => window.open(link.url, '_blank', 'noopener,noreferrer')}
-            aria-label={`Watch ${link.label} — opens in new tab`}
-          >
-            Watch Free Course
-            <ExternalLink size={13} aria-hidden="true" />
-          </Button>
-        ) : (
-          <div className="flex items-center justify-center py-2 px-4 rounded-xl border border-dashed border-base-border text-xs text-text-muted font-sans">
-            Link coming soon — update via Admin Panel
-          </div>
-        )}
+        <LinkButton
+          href={link.url}
+          variant="outline"
+          size="sm"
+          className="w-full justify-center"
+          aria-label={`Watch ${link.label} — opens in new tab`}
+        >
+          Watch Free Course
+          <ExternalLink size={13} aria-hidden="true" />
+        </LinkButton>
       </div>
     </div>
   )
 }
 
 export function Courses({ links }: CoursesProps) {
-  const courseLinks = links.filter((l) => l.category === 'course')
+  const courseLinks = links
+    .filter((l) => l.category === 'course')
+    .filter((l) => !isPlaceholderUrl(l.url))
 
   return (
     <section id="courses" className="section-padding" aria-labelledby="courses-heading">

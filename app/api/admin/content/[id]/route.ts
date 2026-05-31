@@ -3,12 +3,16 @@ import { auth } from '@clerk/nextjs/server'
 import { z } from 'zod'
 import { updateContent, getAdminRole, logActivity } from '@/lib/supabase/queries'
 import { hasPermission } from '@/config/roles'
+import { checkRateLimit } from '@/lib/rateLimit'
 
 const patchSchema = z.object({ value: z.string().max(2000) })
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!checkRateLimit(userId, 30)) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
 
   const adminRecord = await getAdminRole(userId)
   if (!adminRecord || !hasPermission(adminRecord.role, 'canEditContent')) {

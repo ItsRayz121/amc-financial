@@ -3,9 +3,36 @@
 @tailwind utilities;
 
 @layer base {
+  /* ─── CSS Custom Properties ────────────────────────────────────────────────
+     Values are stored as bare RGB channels (e.g. "10 15 30") so Tailwind's
+     opacity modifier syntax works: bg-base-elevated/50 → rgb(26 34 52 / 0.5)
+  ─────────────────────────────────────────────────────────────────────────── */
   :root {
+    /* Font variables */
     --font-inter: 'Inter', sans-serif;
     --font-playfair: 'Playfair Display', serif;
+
+    /* Light mode (default) */
+    --color-bg:             248 249 251;   /* #f8f9fb */
+    --color-surface:        255 255 255;   /* #ffffff  */
+    --color-elevated:       241 243 247;   /* #f1f3f7  */
+    --color-border:         226 232 240;   /* #e2e8f0  */
+    --color-border-subtle:  237 242 247;   /* #edf2f7  */
+    --color-text-primary:    15  23  42;   /* #0f172a  */
+    --color-text-secondary:  71  85 105;   /* #475569  */
+    --color-text-muted:     148 163 184;   /* #94a3b8  */
+  }
+
+  .dark {
+    /* Dark mode */
+    --color-bg:              10  15  30;   /* #0a0f1e  */
+    --color-surface:         17  24  39;   /* #111827  */
+    --color-elevated:        26  34  52;   /* #1a2234  */
+    --color-border:          31  45  71;   /* #1f2d47  */
+    --color-border-subtle:   22  32  51;   /* #162033  */
+    --color-text-primary:   241 245 249;   /* #f1f5f9  */
+    --color-text-secondary: 148 163 184;   /* #94a3b8  */
+    --color-text-muted:     100 116 139;   /* #64748b  */
   }
 
   *,
@@ -26,30 +53,15 @@
     min-height: 100vh;
   }
 
-  .dark body {
-    @apply bg-base text-text-primary;
-  }
-
-  :not(.dark) body {
-    @apply bg-light text-text-light-primary;
-  }
-
   /* Skip to content */
   .skip-link {
-    @apply sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded focus:bg-gold focus:text-base focus:font-sans focus:text-sm focus:font-semibold;
+    @apply sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded focus:bg-gold focus:text-[#0f172a] focus:font-sans focus:text-sm focus:font-semibold;
   }
 
   /* Focus rings */
   :focus-visible {
-    @apply outline-none ring-2 ring-gold ring-offset-2 ring-offset-base;
-  }
-
-  .dark :focus-visible {
-    @apply ring-offset-base;
-  }
-
-  :not(.dark) :focus-visible {
-    @apply ring-offset-light;
+    @apply outline-none ring-2 ring-gold ring-offset-2;
+    ring-offset-color: rgb(var(--color-bg));
   }
 
   /* Scrollbar */
@@ -72,7 +84,8 @@
 
   /* Selection */
   ::selection {
-    @apply bg-gold-muted text-gold;
+    background-color: rgba(201, 168, 76, 0.2);
+    color: #c9a84c;
   }
 }
 
@@ -93,12 +106,12 @@
     background-image: linear-gradient(135deg, #c9a84c 0%, #e2c56e 50%, #c9a84c 100%);
   }
 
-  /* Card dark */
+  /* Semantic card — works in both themes via CSS variables */
   .card-dark {
     @apply bg-base-surface border border-base-border rounded-2xl;
   }
 
-  /* Card light */
+  /* Explicit light card (for any component that still needs it) */
   .card-light {
     @apply bg-light-surface border border-light-border rounded-2xl shadow-card;
   }
@@ -120,12 +133,27 @@
 
   .link-placeholder::after {
     content: 'Coming Soon';
-    @apply absolute -top-1 -right-1 text-[10px] bg-warning text-base px-1.5 py-0.5 rounded font-sans font-semibold;
+    @apply absolute -top-1 -right-1 text-[10px] bg-warning text-[#0f172a] px-1.5 py-0.5 rounded font-sans font-semibold;
   }
 }
 
 @layer utilities {
-  /* Backdrop blur glass effect */
+  /* ─── Navigation glass — theme-aware ─────────────────────────────────────
+     Light: frosted white | Dark: frosted navy
+  ─────────────────────────────────────────────────────────────────────────── */
+  .glass-nav {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(248, 249, 251, 0.92);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  }
+
+  .dark .glass-nav {
+    background: rgba(10, 15, 30, 0.85);
+    border-bottom: 1px solid rgba(31, 45, 71, 0.8);
+  }
+
+  /* Keep originals for any legacy usage */
   .glass-dark {
     background: rgba(10, 15, 30, 0.8);
     backdrop-filter: blur(20px);

@@ -7,7 +7,17 @@ import { SITE_CONFIG } from '@/config/site'
 
 const CREDENTIALS = ['5 Years Experience', 'Forex', 'Crypto', 'Gold', 'Stocks', 'Mutual Funds']
 
-export function About() {
+interface AboutProps {
+  content?: Record<string, string>
+}
+
+export function About({ content = {} }: AboutProps) {
+  const personName = content.about_name ?? SITE_CONFIG.person.name
+  const bio = content.about_bio ?? `${personName} is a leading finance educator sharing expert insights on crypto, stocks, forex, and mutual funds. He delivers daily updates on trading setups, market trends, and profitable opportunities — with smart investing strategies, SIP planning, and in-depth market analysis.`
+  const mission = content.about_mission ?? 'Democratize financial education. Make expert trading knowledge accessible to everyone — completely free.'
+  const vision = content.about_vision ?? 'A financially literate community where every individual can make informed investment decisions and achieve financial freedom.'
+  const memberCount = content.stat_members ?? '2,289'
+
   return (
     <section id="about" className="section-padding" aria-labelledby="about-heading">
       <div className="section-container">
@@ -25,7 +35,7 @@ export function About() {
                   }}
                 />
                 {/* Portrait */}
-                <div className="relative w-72 h-80 md:w-80 md:h-[22rem] rounded-[1.5rem] overflow-hidden border border-base-border shadow-card-hover">
+                <div className="relative w-64 h-72 sm:w-72 sm:h-80 md:w-80 md:h-[22rem] rounded-[1.5rem] overflow-hidden border border-base-border shadow-card-hover">
                   <Image
                     src="/images/aasim-portrait.jpg"
                     alt="Aasim Majeed AMC — Financial Consultant & Finance Educator"
@@ -38,8 +48,8 @@ export function About() {
 
                 {/* Floating experience badge */}
                 <div className="absolute -bottom-4 -right-4 bg-gold rounded-2xl px-4 py-3 shadow-gold">
-                  <p className="text-base font-display font-bold text-base leading-none">5+</p>
-                  <p className="text-xs font-sans font-semibold text-base mt-0.5">Years Exp.</p>
+                  <p className="font-display text-xl font-bold text-[#0a0f1e] leading-none">5+</p>
+                  <p className="text-xs font-sans font-semibold text-[#0a0f1e] mt-0.5">Years Exp.</p>
                 </div>
               </div>
 
@@ -64,15 +74,7 @@ export function About() {
               />
 
               <p className="text-base text-text-secondary font-sans leading-relaxed mb-8">
-                {SITE_CONFIG.person.name} is a leading finance educator sharing expert insights on
-                crypto, stocks, forex, and mutual funds. He delivers daily updates on trading
-                setups, market trends, and profitable opportunities — with smart investing
-                strategies, SIP planning, and in-depth market analysis.
-              </p>
-
-              <p className="text-base text-text-secondary font-sans leading-relaxed mb-8">
-                Whether you&apos;re a beginner or advanced trader, Aasim&apos;s mission is to help
-                you grow wealth with practical knowledge and build consistent income streams.
+                {bio}
               </p>
 
               {/* Mission & Vision cards */}
@@ -84,8 +86,7 @@ export function About() {
                   <div>
                     <p className="text-sm font-semibold font-sans text-text-primary mb-1">Mission</p>
                     <p className="text-xs text-text-secondary font-sans leading-relaxed">
-                      Democratize financial education. Make expert trading knowledge accessible to
-                      everyone — completely free.
+                      {mission}
                     </p>
                   </div>
                 </div>
@@ -97,8 +98,7 @@ export function About() {
                   <div>
                     <p className="text-sm font-semibold font-sans text-text-primary mb-1">Vision</p>
                     <p className="text-xs text-text-secondary font-sans leading-relaxed">
-                      A financially literate community where every individual can make informed
-                      decisions and achieve financial freedom.
+                      {vision}
                     </p>
                   </div>
                 </div>
@@ -108,7 +108,7 @@ export function About() {
               <div className="flex items-center gap-3 p-4 rounded-xl border border-emerald/20 bg-emerald-muted">
                 <Award size={20} className="text-emerald shrink-0" aria-hidden="true" />
                 <p className="text-sm font-sans text-emerald font-medium">
-                  2,289+ students and traders trust AMC&apos;s guidance daily
+                  {memberCount}+ students and traders trust AMC&apos;s guidance daily
                 </p>
               </div>
             </div>
