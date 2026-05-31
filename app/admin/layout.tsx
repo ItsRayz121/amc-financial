@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation'
 import { getCurrentUserWithRole } from '@/lib/clerk/auth'
 import { AdminSidebar } from '@/components/admin/AdminSidebar'
 import { AdminLayoutClient } from './AdminLayoutClient'
@@ -11,8 +10,10 @@ export const metadata = {
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUserWithRole()
 
+  // Not authenticated — render children only (login page renders itself)
+  // Middleware handles redirecting unauthenticated users away from protected routes
   if (!user) {
-    redirect('/admin/login')
+    return <>{children}</>
   }
 
   return (

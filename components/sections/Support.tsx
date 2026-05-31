@@ -1,3 +1,5 @@
+'use client'
+
 import { MessageCircle, Clock, HelpCircle } from 'lucide-react'
 import { ScrollReveal } from '@/components/common/ScrollReveal'
 import { SectionHeader } from '@/components/common/SectionHeader'

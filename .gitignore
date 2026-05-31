@@ -36,3 +36,7 @@ yarn-error.log*
 # Editor
 .vscode/
 .idea/
+
+# Dev server logs
+dev-output.txt
+dev-error.txt

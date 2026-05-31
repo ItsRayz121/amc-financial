@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { z } from 'zod'
 import { updateLink, getAdminRole, logActivity } from '@/lib/supabase/queries'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { hasPermission } from '@/config/roles'
 
 const patchSchema = z.object({
@@ -43,4 +44,35 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   await revalidatePublicPages()
 
   return NextResponse.json(updated)
+}
+
+export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+  const { userId } = await auth()
+  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const adminRecord = await getAdminRole(userId)
+  if (!adminRecord || !hasPermission(adminRecord.role, 'canEditLinks')) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
+  const client = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+  const { error } = await client.from('site_links').delete().eq('id', params.id)
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  await logActivity({
+    clerk_user_id: userId,
+    email: adminRecord.email,
+    action: 'Deleted',
+    resource: 'site_links',
+    resource_id: params.id,
+    details: null,
+  })
+
+  const { revalidatePublicPages } = await import('@/utils/revalidate')
+  await revalidatePublicPages()
+
+  return NextResponse.json({ success: true })
 }

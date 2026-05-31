@@ -1,3 +1,5 @@
+'use client'
+
 import { ExternalLink, Users, Zap } from 'lucide-react'
 import { ScrollReveal } from '@/components/common/ScrollReveal'
 import { SectionHeader } from '@/components/common/SectionHeader'

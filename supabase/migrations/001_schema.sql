@@ -117,26 +117,50 @@ create policy "admin_read_all_links"
   on site_links for select
   using (auth.role() = 'service_role');
 
-create policy "admin_write_links"
-  on site_links for all
+create policy "admin_insert_links"
+  on site_links for insert
+  with check (auth.role() = 'service_role');
+
+create policy "admin_update_links"
+  on site_links for update
   using (auth.role() = 'service_role');
 
-create policy "admin_write_content"
-  on site_content for all
+create policy "admin_delete_links"
+  on site_links for delete
+  using (auth.role() = 'service_role');
+
+create policy "admin_insert_content"
+  on site_content for insert
+  with check (auth.role() = 'service_role');
+
+create policy "admin_update_content"
+  on site_content for update
+  using (auth.role() = 'service_role');
+
+create policy "admin_delete_content"
+  on site_content for delete
   using (auth.role() = 'service_role');
 
 create policy "admin_read_roles"
   on admin_roles for select
   using (auth.role() = 'service_role');
 
-create policy "admin_write_roles"
-  on admin_roles for all
+create policy "admin_insert_roles"
+  on admin_roles for insert
+  with check (auth.role() = 'service_role');
+
+create policy "admin_update_roles"
+  on admin_roles for update
+  using (auth.role() = 'service_role');
+
+create policy "admin_delete_roles"
+  on admin_roles for delete
   using (auth.role() = 'service_role');
 
 create policy "admin_read_activity"
   on admin_activity for select
   using (auth.role() = 'service_role');
 
-create policy "admin_write_activity"
+create policy "admin_insert_activity"
   on admin_activity for insert
-  using (auth.role() = 'service_role');
+  with check (auth.role() = 'service_role');

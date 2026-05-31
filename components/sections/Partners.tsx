@@ -1,3 +1,5 @@
+'use client'
+
 import { ExternalLink, TrendingUp, BarChart2, Activity, BarChart, DollarSign } from 'lucide-react'
 import { ScrollReveal } from '@/components/common/ScrollReveal'
 import { SectionHeader } from '@/components/common/SectionHeader'
