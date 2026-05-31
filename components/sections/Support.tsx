@@ -88,7 +88,7 @@ export function Support() {
                   Mon–Sat · 9am–9pm PKT
                 </div>
                 <div className="flex items-center gap-2 text-sm text-text-muted font-sans">
-                  <Clock size={14} className="shrink-0 text-gold opacity-50" aria-hidden="true" />
+                  <Clock size={14} className="shrink-0 text-gold opacity-70" aria-hidden="true" />
                   Average response: 2–4 hours
                 </div>
               </div>

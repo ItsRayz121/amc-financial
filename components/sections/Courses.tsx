@@ -102,7 +102,7 @@ function CourseCard({ link, index }: { link: SiteLink; index: number }) {
             LIVE
           </span>
         )}
-        <span className="absolute top-3 right-3 text-xs font-mono text-text-muted opacity-40" aria-hidden="true">
+        <span className="absolute top-3 right-3 text-xs font-mono text-text-muted opacity-60" aria-hidden="true">
           0{index + 1}
         </span>
       </div>

@@ -23,7 +23,7 @@ export function Footer() {
           <div className="lg:col-span-1">
             <div className="font-display text-2xl font-bold mb-3">
               <span className="text-gold">AMC</span>
-              <span className="text-text-primary opacity-40 text-lg ml-1">|</span>
+              <span className="text-text-muted text-lg ml-1">|</span>
               <span className="text-text-primary text-lg ml-1">Financial</span>
             </div>
             <p className="text-sm text-text-muted font-sans leading-relaxed mb-4">
@@ -77,7 +77,7 @@ export function Footer() {
                       {item.label}
                     </a>
                   ) : (
-                    <span className="text-sm text-text-muted font-sans opacity-50">
+                    <span className="text-sm text-text-muted font-sans">
                       {item.label} <span className="text-xs text-warning">(Soon)</span>
                     </span>
                   )}
@@ -110,7 +110,7 @@ export function Footer() {
                       {item.label}
                     </a>
                   ) : (
-                    <span className="text-sm text-text-muted font-sans opacity-50">
+                    <span className="text-sm text-text-muted font-sans">
                       {item.label} <span className="text-xs text-warning">(Soon)</span>
                     </span>
                   )}

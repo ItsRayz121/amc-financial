@@ -234,7 +234,7 @@ export function Hero({ content = {} }: HeroProps) {
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           aria-hidden="true"
         >
-          <ChevronDown size={22} className="text-text-muted opacity-40" />
+          <ChevronDown size={22} className="text-text-muted opacity-70" />
         </motion.div>
       )}
     </section>

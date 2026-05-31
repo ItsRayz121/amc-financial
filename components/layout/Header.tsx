@@ -48,7 +48,7 @@ export function Header() {
             aria-label="Aasim Majeed AMC — Home"
           >
             <span className="text-gold">AMC</span>
-            <span className="text-text-primary opacity-40 text-lg ml-1">|</span>
+            <span className="text-text-muted text-lg ml-1">|</span>
             <span className="text-text-primary text-lg ml-1">Financial</span>
           </a>
 
