@@ -52,6 +52,9 @@ export default async function HomePage() {
     { value: parseInt(content.stat_platforms ?? '5'), suffix: '', label: 'Partner Platforms' },
   ]
 
+  // Formatted member count shared across Hero, Testimonials, and MobileStickyBar
+  const memberCount = parseInt(content.stat_members ?? '2289').toLocaleString()
+
   return (
     <>
       <Header />
@@ -67,7 +70,7 @@ export default async function HomePage() {
         <Partners links={links} />
         <FAQ />
         <Support />
-        <MobileStickyBar />
+        <MobileStickyBar memberCount={memberCount} />
       </main>
       <Footer />
     </>
