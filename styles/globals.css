@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-inter: 'Inter', sans-serif;
+    --font-playfair: 'Playfair Display', serif;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-base text-text-primary font-sans;
+    min-height: 100vh;
+  }
+
+  .dark body {
+    @apply bg-base text-text-primary;
+  }
+
+  :not(.dark) body {
+    @apply bg-light text-text-light-primary;
+  }
+
+  /* Skip to content */
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded focus:bg-gold focus:text-base focus:font-sans focus:text-sm focus:font-semibold;
+  }
+
+  /* Focus rings */
+  :focus-visible {
+    @apply outline-none ring-2 ring-gold ring-offset-2 ring-offset-base;
+  }
+
+  .dark :focus-visible {
+    @apply ring-offset-base;
+  }
+
+  :not(.dark) :focus-visible {
+    @apply ring-offset-light;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-base-surface;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-base-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-text-muted;
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-gold-muted text-gold;
+  }
+}
+
+@layer components {
+  /* Section container */
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Section padding */
+  .section-padding {
+    @apply py-20 md:py-28;
+  }
+
+  /* Gold text gradient */
+  .text-gold-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #c9a84c 0%, #e2c56e 50%, #c9a84c 100%);
+  }
+
+  /* Card dark */
+  .card-dark {
+    @apply bg-base-surface border border-base-border rounded-2xl;
+  }
+
+  /* Card light */
+  .card-light {
+    @apply bg-light-surface border border-light-border rounded-2xl shadow-card;
+  }
+
+  /* Animate on scroll — initial state */
+  .reveal {
+    @apply opacity-0 translate-y-6;
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal.revealed {
+    @apply opacity-100 translate-y-0;
+  }
+
+  /* Placeholder link visual */
+  .link-placeholder {
+    @apply opacity-50 cursor-not-allowed pointer-events-none relative;
+  }
+
+  .link-placeholder::after {
+    content: 'Coming Soon';
+    @apply absolute -top-1 -right-1 text-[10px] bg-warning text-base px-1.5 py-0.5 rounded font-sans font-semibold;
+  }
+}
+
+@layer utilities {
+  /* Backdrop blur glass effect */
+  .glass-dark {
+    background: rgba(10, 15, 30, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(31, 45, 71, 0.8);
+  }
+
+  .glass-light {
+    background: rgba(248, 249, 251, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  }
+
+  /* Noise texture overlay for depth */
+  .noise::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    opacity: 0.03;
+  }
+
+  /* Hero background grid */
+  .hero-grid {
+    background-size: 40px 40px;
+    background-image: radial-gradient(circle at 1px 1px, rgba(201, 168, 76, 0.06) 1px, transparent 0);
+  }
+
+  /* Glow border on hover */
+  .glow-gold-hover {
+    transition: box-shadow 0.3s ease;
+  }
+
+  .glow-gold-hover:hover {
+    box-shadow: 0 0 0 1px rgba(201, 168, 76, 0.4), 0 8px 32px rgba(201, 168, 76, 0.12);
+  }
+}
