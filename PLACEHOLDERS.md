@@ -17,10 +17,10 @@ the **Admin Panel → Links** tab — no code changes needed.
 
 | Key | Course | Status |
 |-----|--------|--------|
-| `course_beginner` | Beginner Trading Masterclass | ✅ Trading courses playlist |
-| `course_forex` | Complete Forex Trading Course | ✅ Trading courses playlist |
-| `course_crypto` | Crypto Trading Masterclass | ✅ Trading courses playlist |
-| `course_gold` | Gold (XAU/USD) Trading Course | ✅ Trading courses playlist |
+| `course_beginner` | Trading Complete Course 2026 (single card) | ✅ Playlist link |
+| `course_forex` | Hidden (consolidated into single course card) | — |
+| `course_crypto` | Hidden (consolidated into single course card) | — |
+| `course_gold` | Hidden (consolidated into single course card) | — |
 
 ## Affiliate Links
 
