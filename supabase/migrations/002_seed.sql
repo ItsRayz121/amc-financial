@@ -99,8 +99,8 @@ insert into site_links (key, label, url, description, category, icon, sort_order
  'affiliate', 'BarChart2', 1),
 
 ('affiliate_okx', 'OKX',
- 'PLACEHOLDER_OKX_AFFILIATE',
- 'Global crypto exchange with advanced trading tools',
+ 'https://okx.ac/join/AASIM',
+ 'Global crypto exchange with advanced trading tools — use code AASIM',
  'affiliate', 'Activity', 2),
 
 ('affiliate_binance', 'Binance',
@@ -109,13 +109,13 @@ insert into site_links (key, label, url, description, category, icon, sort_order
  'affiliate', 'TrendingUp', 3),
 
 ('affiliate_bybit', 'Bybit',
- 'PLACEHOLDER_BYBIT_AFFILIATE',
- 'Professional crypto derivatives and spot trading',
+ 'https://partner.bybit.com/b/142207',
+ 'Professional crypto derivatives and spot trading platform',
  'affiliate', 'BarChart', 4),
 
 ('affiliate_exness', 'Exness',
- 'PLACEHOLDER_EXNESS_AFFILIATE',
- 'Regulated forex and CFD broker trusted globally',
+ 'https://one.exnessonelink.com/a/zp4te4zwc7?source=app&platform=mobile&pid=mobile_share',
+ 'Receive $10,000 in virtual funds and learn how to trade with a market leader',
  'affiliate', 'DollarSign', 5)
 
 on conflict (key) do update set

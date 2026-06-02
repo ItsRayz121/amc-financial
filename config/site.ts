@@ -37,6 +37,9 @@ export const SITE_CONFIG = {
   },
   affiliates: {
     bitget: 'https://partner.bitget.site/bg/xsvyzhvw',
+    bybit: 'https://partner.bybit.com/b/142207',
+    okx: 'https://okx.ac/join/AASIM',
+    exness: 'https://one.exnessonelink.com/a/zp4te4zwc7?source=app&platform=mobile&pid=mobile_share',
   },
 } as const
 

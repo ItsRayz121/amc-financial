@@ -41,6 +41,7 @@ function PartnerCard({ link }: { link: SiteLink }) {
   const icon = PARTNER_ICONS[link.key] ?? <BarChart2 size={24} aria-hidden="true" />
   const subtitle = PARTNER_SUBTITLES[link.key] ?? 'Trading Platform'
   const isBitget = link.key === 'affiliate_bitget'
+  const isExness = link.key === 'affiliate_exness'
 
   return (
     <div
@@ -48,7 +49,7 @@ function PartnerCard({ link }: { link: SiteLink }) {
         'card-dark rounded-2xl p-6 flex flex-col',
         'transition-all duration-350',
         'hover:-translate-y-1 hover:shadow-card-hover glow-gold-hover',
-        isBitget && 'ring-1 ring-gold/20'
+        (isBitget || isExness) && 'ring-1 ring-gold/20'
       )}
     >
       <div className="flex items-start justify-between gap-3 mb-4">
@@ -57,6 +58,7 @@ function PartnerCard({ link }: { link: SiteLink }) {
         </div>
         <div className="flex flex-col items-end gap-1.5">
           {isBitget && <Badge variant="gold">Recommended</Badge>}
+          {isExness && <Badge variant="gold">$10K Demo</Badge>}
         </div>
       </div>
 

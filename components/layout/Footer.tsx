@@ -94,10 +94,10 @@ export function Footer() {
             <ul className="flex flex-col gap-2.5">
               {[
                 { label: 'Bitget', href: SITE_CONFIG.affiliates.bitget },
-                { label: 'OKX', href: null },
+                { label: 'OKX', href: SITE_CONFIG.affiliates.okx },
                 { label: 'Binance', href: null },
-                { label: 'Bybit', href: null },
-                { label: 'Exness', href: null },
+                { label: 'Bybit', href: SITE_CONFIG.affiliates.bybit },
+                { label: 'Exness', href: SITE_CONFIG.affiliates.exness },
               ].map((item) => (
                 <li key={item.label}>
                   {item.href ? (
