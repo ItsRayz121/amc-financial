@@ -53,16 +53,18 @@ export function Courses({ links }: CoursesProps) {
               'ring-1 ring-gold/20',
             )}>
               {/* Thumbnail */}
-              <div className="relative h-64 sm:h-72 overflow-hidden border-b border-base-border bg-base-elevated">
+              <div className="relative w-full border-b border-base-border bg-base-elevated overflow-hidden">
                 <Image
                   src="/images/course-thumbnail.jpg"
                   alt="Trading Complete Course 2026 — Zero to Pro Trader"
-                  fill
+                  width={1280}
+                  height={720}
                   sizes="(max-width: 640px) 100vw, 672px"
-                  className="object-cover"
+                  className="w-full h-auto block"
                   priority
                 />
-                <div className="absolute inset-0 bg-base/40 flex items-center justify-center">
+                {/* overlay */}
+                <div className="absolute inset-0 bg-base/30 flex items-center justify-center">
                   <div className="w-16 h-16 rounded-full bg-gold/90 flex items-center justify-center shadow-gold">
                     <Play size={24} className="text-[#0a0f1e] ml-1" fill="currentColor" aria-hidden="true" />
                   </div>
