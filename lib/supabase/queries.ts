@@ -1,5 +1,5 @@
 import { createClient as createSupabaseClient, type SupabaseClient } from '@supabase/supabase-js'
-import type { SiteLink, SiteContent, AdminRoleRecord, AdminActivity, SiteLinkCategory } from '@/types/database'
+import type { SiteLink, SiteContent, AdminRoleRecord, AdminActivity, SiteLinkCategory, NewsletterSubscriber } from '@/types/database'
 
 type AnySupabaseClient = SupabaseClient<any>
 
@@ -161,4 +161,27 @@ export async function getRecentActivity(limit = 20): Promise<AdminActivity[]> {
     .limit(limit)
   if (error) throw error
   return (data as AdminActivity[]) ?? []
+}
+
+// ─── Newsletter subscribers ───────────────────────────────────────────────────
+
+export async function saveSubscriber(
+  record: Pick<NewsletterSubscriber, 'email' | 'phone'>
+): Promise<NewsletterSubscriber> {
+  const { data, error } = await adminClient()
+    .from('newsletter_subscribers')
+    .insert(record as Record<string, unknown>)
+    .select()
+    .single()
+  if (error) throw error
+  return data as NewsletterSubscriber
+}
+
+export async function getAllSubscribers(): Promise<NewsletterSubscriber[]> {
+  const { data, error } = await adminClient()
+    .from('newsletter_subscribers')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return (data as NewsletterSubscriber[]) ?? []
 }

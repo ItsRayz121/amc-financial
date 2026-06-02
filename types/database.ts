@@ -45,6 +45,13 @@ export interface AdminActivity {
   created_at: string
 }
 
+export interface NewsletterSubscriber {
+  id: string
+  email: string
+  phone: string | null
+  created_at: string
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -66,6 +73,11 @@ export interface Database {
       admin_activity: {
         Row: AdminActivity
         Insert: Omit<AdminActivity, 'id' | 'created_at'>
+        Update: never
+      }
+      newsletter_subscribers: {
+        Row: NewsletterSubscriber
+        Insert: Omit<NewsletterSubscriber, 'id' | 'created_at'>
         Update: never
       }
     }

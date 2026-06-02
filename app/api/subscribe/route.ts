@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { saveSubscriber } from '@/lib/supabase/queries'
 
 const schema = z.object({
   email: z.string().email('Please enter a valid email address'),
+  phone: z.string().nullable().optional(),
 })
 
 export async function POST(req: NextRequest) {
@@ -13,11 +15,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 })
   }
 
-  // TODO: Integrate with Brevo (formerly Sendinblue) email service
-  // const BREVO_API_KEY = process.env.BREVO_API_KEY
-  // Add subscriber to list and trigger welcome sequence
+  try {
+    await saveSubscriber({
+      email: result.data.email,
+      phone: result.data.phone ?? null,
+    })
+  } catch {
+    return NextResponse.json({ error: 'Failed to save. Please try again.' }, { status: 500 })
+  }
 
-  console.log('New subscriber:', result.data.email)
-
-  return NextResponse.json({ success: true, message: 'Thank you! Check your email for your free Starter Kit.' })
+  return NextResponse.json({ success: true, message: 'Thank you for subscribing!' })
 }

@@ -9,6 +9,7 @@ import {
   Users,
   Settings,
   ExternalLink,
+  Mail,
 } from 'lucide-react'
 import { UserButton } from '@clerk/nextjs'
 import { useRole } from '@/hooks/useRole'
@@ -20,6 +21,7 @@ const NAV = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard, permission: null },
   { href: '/admin/links', label: 'Links', icon: Link2, permission: null },
   { href: '/admin/content', label: 'Content', icon: FileText, permission: null },
+  { href: '/admin/subscribers', label: 'Subscribers', icon: Mail, permission: null },
   { href: '/admin/team', label: 'Team', icon: Users, permission: 'canManageTeam' as const },
   { href: '/admin/settings', label: 'Settings', icon: Settings, permission: 'canViewSettings' as const },
 ]
