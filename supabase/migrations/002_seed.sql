@@ -23,7 +23,7 @@ insert into site_links (key, label, url, description, category, icon, sort_order
  'community', 'Instagram', 3),
 
 ('airdrop_community', 'Crypto Airdrop Channel',
- 'PLACEHOLDER_AIRDROP_CHANNEL',
+ 'https://whatsapp.com/channel/0029VabpW3K6buMPC5DFVo1Z',
  'Exclusive crypto airdrop alerts and opportunities',
  'community', 'Zap', 4),
 
@@ -63,22 +63,22 @@ insert into site_links (key, label, url, description, category, icon, sort_order
  'course', 'Youtube', 1),
 
 ('course_beginner', 'Beginner Trading Course',
- 'PLACEHOLDER_YOUTUBE_BEGINNER',
+ 'https://youtube.com/playlist?list=PL6vBZVBtg6KYq5sZKVK85tHoH7qXyHt3C&si=gcqPa1DeOa9-cAK5',
  'Complete foundation course — start your trading journey from zero',
  'course', 'BookOpen', 2),
 
 ('course_forex', 'Forex Trading Course',
- 'PLACEHOLDER_YOUTUBE_FOREX',
+ 'https://youtube.com/playlist?list=PL6vBZVBtg6KYq5sZKVK85tHoH7qXyHt3C&si=gcqPa1DeOa9-cAK5',
  'Master currency markets with proven forex strategies',
  'course', 'TrendingUp', 3),
 
 ('course_crypto', 'Crypto Trading Course',
- 'PLACEHOLDER_YOUTUBE_CRYPTO',
+ 'https://youtube.com/playlist?list=PL6vBZVBtg6KYq5sZKVK85tHoH7qXyHt3C&si=gcqPa1DeOa9-cAK5',
  'Navigate crypto markets — from Bitcoin to altcoins',
  'course', 'Bitcoin', 4),
 
 ('course_gold', 'Gold Trading Course',
- 'PLACEHOLDER_YOUTUBE_GOLD',
+ 'https://youtube.com/playlist?list=PL6vBZVBtg6KYq5sZKVK85tHoH7qXyHt3C&si=gcqPa1DeOa9-cAK5',
  'XAU/USD analysis and gold trading strategies',
  'course', 'CircleDollarSign', 5)
 

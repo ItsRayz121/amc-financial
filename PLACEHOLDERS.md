@@ -10,17 +10,17 @@ the **Admin Panel → Links** tab — no code changes needed.
 
 | Key | Platform | Status |
 |-----|----------|--------|
-| `airdrop_community` | Crypto Airdrop Channel | ⏳ Needs link |
+| `airdrop_community` | Crypto Airdrop Channel | ✅ `https://whatsapp.com/channel/0029VabpW3K6buMPC5DFVo1Z` |
 | `gold_community` | Gold Trading Community | ⏳ Needs link |
 
 ## Courses (YouTube)
 
 | Key | Course | Status |
 |-----|--------|--------|
-| `course_beginner` | Beginner Trading Masterclass | ⏳ Needs YouTube URL |
-| `course_forex` | Complete Forex Trading Course | ⏳ Needs YouTube URL |
-| `course_crypto` | Crypto Trading Masterclass | ⏳ Needs YouTube URL |
-| `course_gold` | Gold (XAU/USD) Trading Course | ⏳ Needs YouTube URL |
+| `course_beginner` | Beginner Trading Masterclass | ✅ Trading courses playlist |
+| `course_forex` | Complete Forex Trading Course | ✅ Trading courses playlist |
+| `course_crypto` | Crypto Trading Masterclass | ✅ Trading courses playlist |
+| `course_gold` | Gold (XAU/USD) Trading Course | ✅ Trading courses playlist |
 
 ## Affiliate Links
 
@@ -49,3 +49,5 @@ the **Admin Panel → Links** tab — no code changes needed.
 - WhatsApp Support → `https://wa.me/923486222404`
 - Live Trading Session → `https://youtube.com/live/MNsdGMnzGI4?feature=share`
 - Bitget Affiliate → `https://partner.bitget.site/bg/xsvyzhvw`
+- Airdrop Channel (WhatsApp) → `https://whatsapp.com/channel/0029VabpW3K6buMPC5DFVo1Z`
+- Trading Courses (YouTube Playlist) → `https://youtube.com/playlist?list=PL6vBZVBtg6KYq5sZKVK85tHoH7qXyHt3C`
