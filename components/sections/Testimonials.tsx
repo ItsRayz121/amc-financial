@@ -64,7 +64,7 @@ export function Testimonials() {
         <ScrollReveal>
           <SectionHeader
             eyebrow="What Traders Say"
-            title="Trusted by 2,289+ Traders"
+            title="Trusted by 10,000+ Traders"
             subtitle="Real feedback from our WhatsApp and Telegram community members."
             centered
             className="mb-12"

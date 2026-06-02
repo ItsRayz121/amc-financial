@@ -8,7 +8,7 @@ interface MobileStickyBarProps {
   memberCount?: string
 }
 
-export function MobileStickyBar({ memberCount = '2,289' }: MobileStickyBarProps) {
+export function MobileStickyBar({ memberCount = '10,000' }: MobileStickyBarProps) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {

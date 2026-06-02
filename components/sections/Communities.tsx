@@ -20,7 +20,7 @@ function getPlatformStyles(key: string) {
       iconColor: 'text-[#25D366]',
       borderHover: 'hover:border-[#25D366]/30',
       btnVariant: 'whatsapp' as const,
-      memberBadge: key === 'whatsapp_community' ? '2,289+ Members' : null,
+      memberBadge: key === 'whatsapp_community' ? '10,000+ Members' : null,
     }
   if (key.includes('telegram'))
     return {

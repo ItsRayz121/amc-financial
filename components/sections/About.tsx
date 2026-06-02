@@ -16,7 +16,9 @@ export function About({ content = {} }: AboutProps) {
   const bio = content.about_bio ?? `${personName} is a leading finance educator sharing expert insights on crypto, stocks, forex, and mutual funds. He delivers daily updates on trading setups, market trends, and profitable opportunities — with smart investing strategies, SIP planning, and in-depth market analysis.`
   const mission = content.about_mission ?? 'Democratize financial education. Make expert trading knowledge accessible to everyone — completely free.'
   const vision = content.about_vision ?? 'A financially literate community where every individual can make informed investment decisions and achieve financial freedom.'
-  const memberCount = content.stat_members ?? '2,289'
+  const memberCount = content.stat_members
+    ? parseInt(content.stat_members).toLocaleString()
+    : '10,000'
 
   return (
     <section id="about" className="section-padding" aria-labelledby="about-heading">

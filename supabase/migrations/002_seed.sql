@@ -144,7 +144,7 @@ insert into site_content (key, label, value, type, group_name) values
 
 -- Stats
 ('stat_years', 'Years of Experience', '5', 'number', 'stats'),
-('stat_members', 'Community Members', '2289', 'number', 'stats'),
+('stat_members', 'Community Members', '10000', 'number', 'stats'),
 ('stat_courses', 'Free Courses', '4', 'number', 'stats'),
 ('stat_platforms', 'Partner Platforms', '5', 'number', 'stats'),
 

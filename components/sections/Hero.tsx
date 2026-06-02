@@ -208,10 +208,10 @@ export function Hero({ content = {} }: HeroProps) {
 
   const subheadline = content.hero_subheadline ?? 'Free trading education, live market insights, and thriving communities — by Aasim Majeed AMC, Financial Consultant with 5 years of experience.'
 
-  // Format member count with locale commas: "2289" → "2,289"
+  // Format member count with locale commas: "10000" → "10,000"
   const memberCount = content.stat_members
     ? parseInt(content.stat_members).toLocaleString()
-    : '2,289'
+    : '10,000'
 
   const trustItems = [
     '100% Free',

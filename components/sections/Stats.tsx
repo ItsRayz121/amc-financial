@@ -9,7 +9,7 @@ interface StatItem {
 
 const DEFAULT_STATS: StatItem[] = [
   { value: 5, suffix: '+', label: 'Years of Experience' },
-  { value: 2289, suffix: '+', label: 'Community Members' },
+  { value: 10000, suffix: '+', label: 'Community Members' },
   { value: 4, suffix: '+', label: 'Free Courses' },
   { value: 5, suffix: '', label: 'Partner Platforms' },
 ]

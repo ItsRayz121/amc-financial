@@ -24,7 +24,7 @@ const DEFAULT_CONTENT: Record<string, string> = {
   about_mission: 'Democratize financial education. Make expert trading knowledge accessible to everyone — completely free.',
   about_vision: 'A financially literate community where every individual can make informed investment decisions and achieve financial freedom.',
   stat_years: '5',
-  stat_members: '2289',
+  stat_members: '10000',
   stat_courses: '4',
   stat_platforms: '5',
 }
@@ -47,13 +47,13 @@ export default async function HomePage() {
   // Parse stats from DB content
   const stats = [
     { value: parseInt(content.stat_years ?? '5'), suffix: '+', label: 'Years of Experience' },
-    { value: parseInt(content.stat_members ?? '2289'), suffix: '+', label: 'Community Members' },
+    { value: parseInt(content.stat_members ?? '10000'), suffix: '+', label: 'Community Members' },
     { value: parseInt(content.stat_courses ?? '4'), suffix: '+', label: 'Free Courses' },
     { value: parseInt(content.stat_platforms ?? '5'), suffix: '', label: 'Partner Platforms' },
   ]
 
   // Formatted member count shared across Hero, Testimonials, and MobileStickyBar
-  const memberCount = parseInt(content.stat_members ?? '2289').toLocaleString()
+  const memberCount = parseInt(content.stat_members ?? '10000').toLocaleString()
 
   return (
     <>
