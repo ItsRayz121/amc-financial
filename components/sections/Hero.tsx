@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button'
 import { LinkButton } from '@/components/ui/LinkButton'
 import { SITE_CONFIG } from '@/config/site'
 
+// Candle stores values in price units (not pixels)
 interface Candle {
   open: number
   close: number
@@ -16,7 +17,7 @@ interface Candle {
 
 function ChartCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animRef = useRef<number | null>(null)
+  const animRef   = useRef<number | null>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -24,48 +25,61 @@ function ChartCanvas() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    let width = 0
-    let height = 0
+    let width = 0, height = 0
     let scrollOffset = 0
 
-    const BODY_W = 12
-    const GAP = 8
-    const STEP = BODY_W + GAP
+    // ── Layout ────────────────────────────────────────────────
+    const BODY_W  = 7    // px — narrow body like real charts
+    const GAP     = 3    // px between candles
+    const STEP    = BODY_W + GAP   // 10 px per candle → ~120 candles on 1200px screen
 
+    // Chart occupies the middle 65% of canvas height
+    const CHART_TOP_PCT    = 0.15
+    const CHART_BOTTOM_PCT = 0.80
+
+    // ── Price model (works in "price units", then maps to px) ─
+    // Visible window = PRICE_WINDOW units; starting mid-range
+    const PRICE_WINDOW = 100
+    let   viewMin      = 50   // lower bound of visible price range
+    let   viewMax      = viewMin + PRICE_WINDOW
+
+    function priceToY(p: number): number {
+      const pct = 1 - (p - viewMin) / (viewMax - viewMin)   // 0=top,1=bottom
+      return CHART_TOP_PCT * height + pct * (CHART_BOTTOM_PCT - CHART_TOP_PCT) * height
+    }
+
+    // ── Candle generation in price units ──────────────────────
     const candles: Candle[] = []
 
-    // Slight upward drift to show "buy low sell high" trend.
-    // Canvas Y: 0 = top, height = bottom. Higher price → smaller Y.
     function nextCandle(prevClose: number): Candle {
-      const drift = (Math.random() - 0.46) * 22
-      const open  = prevClose
-      const close = Math.max(height * 0.15, Math.min(height * 0.85, open + drift))
-      const bodySpan = Math.abs(close - open)
-      const wickLen  = bodySpan * (0.3 + Math.random() * 0.5) + 3
-
-      // Upper wick: extends above the body → subtract from body top (smaller Y)
-      const high = Math.min(open, close) - wickLen
-      // Lower wick: extends below the body → add to body bottom (larger Y)
-      const low  = Math.max(open, close) + wickLen
-
+      // Small realistic body movement (+/- up to 1.5 price units, slight upward bias)
+      const body    = (Math.random() - 0.45) * 2.8
+      const open    = prevClose
+      const close   = open + body
+      // Realistic wicks: 0.3–1.5 price units beyond body
+      const upWick  = 0.3 + Math.random() * 1.2
+      const downWick= 0.3 + Math.random() * 1.2
       return {
         open,
         close,
-        high: Math.max(high, height * 0.08),  // don't leave canvas top
-        low:  Math.min(low,  height * 0.92),  // don't leave canvas bottom
+        high: Math.max(open, close) + upWick,
+        low:  Math.min(open, close) - downWick,
       }
     }
 
     function buildCandles() {
       candles.length = 0
-      // Start mid-low then drift upward for a bullish backdrop
-      let price = height * 0.65
-      const count = Math.ceil(width / STEP) + 6
+      let price = viewMin + PRICE_WINDOW * 0.45  // start near lower-mid
+      const count = Math.ceil(width / STEP) + 8
       for (let i = 0; i < count; i++) {
         const c = nextCandle(price)
         price = c.close
         candles.push(c)
       }
+      // Re-centre view around current price
+      const cur = candles[candles.length - 1]?.close ?? viewMin + 50
+      viewMin = cur - PRICE_WINDOW * 0.5
+      viewMax = viewMin + PRICE_WINDOW
     }
 
     function resize() {
@@ -74,83 +88,93 @@ function ChartCanvas() {
       buildCandles()
     }
 
-    // Throttle to ~40 fps on background canvas — smooth but cheap
+    // ── Draw loop ~40 fps ──────────────────────────────────────
     let lastFrame = 0
     function draw(ts: number) {
       animRef.current = requestAnimationFrame(draw)
-      if (ts - lastFrame < 25) return   // ~40 fps cap
+      if (ts - lastFrame < 25) return
       lastFrame = ts
-
       if (!ctx) return
       ctx.clearRect(0, 0, width, height)
 
-      const shift = scrollOffset % STEP
+      // Subtle horizontal grid lines
+      ctx.lineWidth = 1
+      for (let g = 0; g <= 4; g++) {
+        const price = viewMin + (g / 4) * PRICE_WINDOW
+        const y     = Math.round(priceToY(price)) + 0.5
+        ctx.strokeStyle = 'rgba(201,168,76,0.05)'
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke()
+      }
 
+      // BUY ZONE label (lower price area)
+      const buyY  = priceToY(viewMin + PRICE_WINDOW * 0.18)
+      ctx.fillStyle = 'rgba(52,211,153,0.12)'
+      ctx.font = '11px monospace'
+      ctx.fillText('▲ BUY ZONE', 10, buyY)
+
+      // SELL ZONE label (upper price area)
+      const sellY = priceToY(viewMax - PRICE_WINDOW * 0.18)
+      ctx.fillStyle = 'rgba(248,113,113,0.12)'
+      ctx.fillText('▼ SELL ZONE', 10, sellY)
+
+      // Draw candles
+      const shift = scrollOffset % STEP
       for (let i = 0; i < candles.length; i++) {
         const cx = i * STEP - shift
-        if (cx < -STEP * 2 || cx > width + STEP) continue
+        if (cx < -STEP || cx > width + STEP) continue
 
-        const c = candles[i]
-        const bullish   = c.close >= c.open
-        // Opacity kept subtle so text stays readable
-        const bodyColor = bullish
-          ? 'rgba(52, 211, 153, 0.28)'   // emerald-ish green
-          : 'rgba(239, 100, 100, 0.24)'  // soft red
-        const wickColor = bullish
-          ? 'rgba(52, 211, 153, 0.18)'
-          : 'rgba(239, 100, 100, 0.15)'
+        const c      = candles[i]
+        // In price units: higher close = bullish
+        const isBull = c.close >= c.open
 
-        const bodyTop = Math.min(c.open, c.close)
-        const bodyH   = Math.max(Math.abs(c.close - c.open), 2)
+        const bodyColor   = isBull ? 'rgba(52,211,153,0.45)'  : 'rgba(248,113,113,0.40)'
+        const borderColor = isBull ? 'rgba(52,211,153,0.70)'  : 'rgba(248,113,113,0.65)'
+        const wickColor   = isBull ? 'rgba(52,211,153,0.35)'  : 'rgba(248,113,113,0.30)'
+
+        const yHigh  = priceToY(c.high)
+        const yLow   = priceToY(c.low)
+        const yOpen  = priceToY(c.open)
+        const yClose = priceToY(c.close)
+
+        const bodyTop = Math.min(yOpen, yClose)
+        const bodyH   = Math.max(Math.abs(yClose - yOpen), 1.5)
         const midX    = cx + BODY_W / 2
 
-        // Upper wick
+        // Full wick line
         ctx.beginPath()
-        ctx.moveTo(midX, c.high)
-        ctx.lineTo(midX, bodyTop)
+        ctx.moveTo(midX, yHigh)
+        ctx.lineTo(midX, yLow)
         ctx.strokeStyle = wickColor
         ctx.lineWidth = 1
         ctx.stroke()
 
-        // Lower wick
+        // Body
         ctx.beginPath()
-        ctx.moveTo(midX, bodyTop + bodyH)
-        ctx.lineTo(midX, c.low)
-        ctx.strokeStyle = wickColor
-        ctx.lineWidth = 1
-        ctx.stroke()
-
-        // Body — slightly rounded
-        ctx.beginPath()
-        ctx.roundRect(cx, bodyTop, BODY_W, bodyH, 2)
+        if (ctx.roundRect) ctx.roundRect(cx, bodyTop, BODY_W, bodyH, 1)
+        else ctx.rect(cx, bodyTop, BODY_W, bodyH)
         ctx.fillStyle = bodyColor
         ctx.fill()
-        // Border
-        ctx.strokeStyle = bullish
-          ? 'rgba(52, 211, 153, 0.45)'
-          : 'rgba(239, 100, 100, 0.35)'
-        ctx.lineWidth = 0.8
+        ctx.strokeStyle = borderColor
+        ctx.lineWidth = 0.7
         ctx.stroke()
       }
 
-      // Subtle horizontal grid lines
-      ctx.strokeStyle = 'rgba(201,168,76,0.04)'
-      ctx.lineWidth = 1
-      for (let g = 0.2; g <= 0.8; g += 0.2) {
-        const y = Math.round(height * g) + 0.5
-        ctx.beginPath()
-        ctx.moveTo(0, y)
-        ctx.lineTo(width, y)
-        ctx.stroke()
-      }
-
-      scrollOffset += 0.35
-
+      scrollOffset += 0.3
       if (scrollOffset >= STEP) {
         scrollOffset = 0
         candles.shift()
         const last = candles[candles.length - 1]
-        candles.push(nextCandle(last?.close ?? height * 0.5))
+        const newC = nextCandle(last?.close ?? viewMin + 50)
+        candles.push(newC)
+
+        // Slowly scroll view window to follow price
+        const latestClose = newC.close
+        const mid = viewMin + PRICE_WINDOW / 2
+        if (latestClose > mid + PRICE_WINDOW * 0.3) {
+          viewMin += 0.4; viewMax += 0.4
+        } else if (latestClose < mid - PRICE_WINDOW * 0.3) {
+          viewMin -= 0.4; viewMax -= 0.4
+        }
       }
     }
 
