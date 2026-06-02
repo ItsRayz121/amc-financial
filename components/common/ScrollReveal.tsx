@@ -18,21 +18,24 @@ export function ScrollReveal({
 }: ScrollRevealProps) {
   const shouldReduceMotion = useReducedMotion()
 
+  // Reduce travel distance so animations feel snappy on mobile
+  const travel = 16
+
   const initial = shouldReduceMotion
     ? { opacity: 0 }
     : {
         opacity: 0,
-        y: direction === 'up' ? 28 : 0,
-        x: direction === 'left' ? -28 : direction === 'right' ? 28 : 0,
+        y: direction === 'up' ? travel : 0,
+        x: direction === 'left' ? -travel : direction === 'right' ? travel : 0,
       }
 
   return (
     <motion.div
       initial={initial}
       whileInView={{ opacity: 1, y: 0, x: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
+      viewport={{ once: true, margin: '-40px' }}
       transition={{
-        duration: shouldReduceMotion ? 0.2 : 0.6,
+        duration: shouldReduceMotion ? 0.15 : 0.5,
         delay: shouldReduceMotion ? 0 : delay,
         ease: [0.16, 1, 0.3, 1],
       }}

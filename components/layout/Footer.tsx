@@ -7,7 +7,7 @@ function SocialIcon({ href, label, children }: { href: string; label: string; ch
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="w-9 h-9 rounded-lg bg-base-elevated border border-base-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-gold/30 hover:bg-gold-muted transition-all duration-250"
+      className="w-11 h-11 rounded-lg bg-base-elevated border border-base-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-gold/30 hover:bg-gold-muted transition-all duration-250"
     >
       {children}
     </a>
@@ -17,7 +17,7 @@ function SocialIcon({ href, label, children }: { href: string; label: string; ch
 export function Footer() {
   return (
     <footer className="border-t border-base-border bg-base-surface mt-0" aria-label="Site footer">
-      <div className="section-container py-16">
+      <div className="section-container py-10 sm:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="lg:col-span-1">

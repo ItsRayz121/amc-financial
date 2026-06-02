@@ -130,8 +130,12 @@ export function Hero({ content = {} }: HeroProps) {
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden hero-grid"
       aria-label="Introduction"
     >
-      {/* Animated chart background */}
-      {!shouldReduceMotion && <ChartCanvas />}
+      {/* Animated chart background — hidden on mobile for performance */}
+      {!shouldReduceMotion && (
+        <div className="hidden sm:block absolute inset-0 pointer-events-none">
+          <ChartCanvas />
+        </div>
+      )}
 
       {/* Radial glow */}
       <div
@@ -143,7 +147,7 @@ export function Hero({ content = {} }: HeroProps) {
         }}
       />
 
-      <div className="section-container relative z-10 flex flex-col items-center text-center pt-28 pb-20">
+      <div className="section-container relative z-10 flex flex-col items-center text-center pt-24 sm:pt-28 pb-16 sm:pb-20">
         {/* Eyebrow badge */}
         <motion.div
           initial={shouldReduceMotion ? {} : { opacity: 0, y: -16 }}
@@ -169,7 +173,7 @@ export function Hero({ content = {} }: HeroProps) {
 
         {/* Sub-headline */}
         <motion.p
-          className="text-lg md:text-xl text-text-secondary font-sans leading-relaxed max-w-2xl mb-10"
+          className="text-base sm:text-lg md:text-xl text-text-secondary font-sans leading-relaxed max-w-2xl mb-8 sm:mb-10"
           initial={shouldReduceMotion ? {} : { opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}

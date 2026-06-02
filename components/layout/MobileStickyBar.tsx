@@ -19,10 +19,18 @@ export function MobileStickyBar({ memberCount = '2,289' }: MobileStickyBarProps)
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  if (!visible) return null
-
+  // Always render but slide in/out via transform (avoids layout reflow)
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-20 p-4 bg-base-surface/95 backdrop-blur-sm border-t border-base-border md:hidden">
+    <div
+      className={`fixed bottom-0 left-0 right-0 z-20 bg-base-surface/95 backdrop-blur-sm border-t border-base-border md:hidden transition-transform duration-300 ${visible ? 'translate-y-0' : 'translate-y-full'}`}
+      style={{
+        paddingTop: '0.75rem',
+        paddingLeft: '1rem',
+        paddingRight: '1rem',
+        paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))',
+        willChange: 'transform',
+      }}
+    >
       <LinkButton
         href={SITE_CONFIG.social.whatsapp}
         variant="gold"

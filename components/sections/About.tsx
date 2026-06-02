@@ -21,7 +21,7 @@ export function About({ content = {} }: AboutProps) {
   return (
     <section id="about" className="section-padding" aria-labelledby="about-heading">
       <div className="section-container">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
           {/* Left — portrait */}
           <ScrollReveal direction="left" delay={0}>
             <div className="flex flex-col items-center lg:items-start gap-6">
@@ -35,7 +35,7 @@ export function About({ content = {} }: AboutProps) {
                   }}
                 />
                 {/* Portrait */}
-                <div className="relative w-64 h-72 sm:w-72 sm:h-80 md:w-80 md:h-[22rem] rounded-[1.5rem] overflow-hidden border border-base-border shadow-card-hover">
+                <div className="relative w-56 h-64 sm:w-72 sm:h-80 md:w-80 md:h-[22rem] rounded-[1.5rem] overflow-hidden border border-base-border shadow-card-hover">
                   <Image
                     src="/images/aasim-portrait.jpg"
                     alt="Aasim Majeed AMC — Financial Consultant & Finance Educator"

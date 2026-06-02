@@ -46,11 +46,15 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    overflow-x: hidden;
   }
 
   body {
     @apply bg-base text-text-primary font-sans;
     min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
   }
 
   /* Skip to content */
@@ -93,11 +97,12 @@
   /* Section container */
   .section-container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    width: 100%;
   }
 
   /* Section padding */
   .section-padding {
-    @apply py-20 md:py-28;
+    @apply py-14 md:py-20 lg:py-28;
   }
 
   /* Gold text gradient */
@@ -192,5 +197,26 @@
 
   .glow-gold-hover:hover {
     box-shadow: 0 0 0 1px rgba(201, 168, 76, 0.4), 0 8px 32px rgba(201, 168, 76, 0.12);
+  }
+
+  /* Safe area padding for notched phones (iPhone X+) */
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  /* Minimum 44px touch targets */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    @apply flex items-center justify-center;
+  }
+
+  /* Disable heavy animations on low-power / mobile */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
