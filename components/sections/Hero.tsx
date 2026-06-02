@@ -34,20 +34,25 @@ function ChartCanvas() {
 
     const candles: Candle[] = []
 
-    // Slight upward drift to show "buy low sell high" trend
+    // Slight upward drift to show "buy low sell high" trend.
+    // Canvas Y: 0 = top, height = bottom. Higher price → smaller Y.
     function nextCandle(prevClose: number): Candle {
       const drift = (Math.random() - 0.46) * 22
-      const open = prevClose
-      const close = Math.max(height * 0.12, Math.min(height * 0.88, open + drift))
+      const open  = prevClose
+      const close = Math.max(height * 0.15, Math.min(height * 0.85, open + drift))
       const bodySpan = Math.abs(close - open)
-      const wickMult = 0.3 + Math.random() * 0.5
-      const high = Math.max(open, close) + bodySpan * wickMult + Math.random() * 6
-      const low  = Math.min(open, close) - bodySpan * wickMult - Math.random() * 6
+      const wickLen  = bodySpan * (0.3 + Math.random() * 0.5) + 3
+
+      // Upper wick: extends above the body → subtract from body top (smaller Y)
+      const high = Math.min(open, close) - wickLen
+      // Lower wick: extends below the body → add to body bottom (larger Y)
+      const low  = Math.max(open, close) + wickLen
+
       return {
         open,
         close,
-        high: Math.min(high, height * 0.08),
-        low:  Math.max(low,  height * 0.92),
+        high: Math.max(high, height * 0.08),  // don't leave canvas top
+        low:  Math.min(low,  height * 0.92),  // don't leave canvas bottom
       }
     }
 

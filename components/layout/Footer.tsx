@@ -64,7 +64,7 @@ export function Footer() {
                 { label: 'WhatsApp Community', href: SITE_CONFIG.social.whatsapp },
                 { label: 'Telegram Community', href: SITE_CONFIG.social.telegram },
                 { label: 'Instagram', href: SITE_CONFIG.social.instagram },
-                { label: 'Crypto Airdrop Channel', href: null },
+                { label: 'Crypto Airdrop Channel', href: 'https://whatsapp.com/channel/0029VabpW3K6buMPC5DFVo1Z' },
               ].map((item) => (
                 <li key={item.label}>
                   {item.href ? (
