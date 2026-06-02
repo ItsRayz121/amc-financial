@@ -7,6 +7,13 @@ import { Button } from '@/components/ui/Button'
 import { LinkButton } from '@/components/ui/LinkButton'
 import { SITE_CONFIG } from '@/config/site'
 
+interface Candle {
+  open: number
+  close: number
+  high: number
+  low: number
+}
+
 function ChartCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animRef = useRef<number | null>(null)
@@ -19,70 +26,133 @@ function ChartCanvas() {
 
     let width = 0
     let height = 0
+    let scrollOffset = 0
 
-    const points: number[] = []
-    let offset = 0
+    const BODY_W = 12
+    const GAP = 8
+    const STEP = BODY_W + GAP
 
-    function generatePoints() {
-      points.length = 0
-      let y = height * 0.5
-      for (let i = 0; i < width / 8 + 20; i++) {
-        y += (Math.random() - 0.48) * 12
-        y = Math.max(height * 0.2, Math.min(height * 0.8, y))
-        points.push(y)
+    const candles: Candle[] = []
+
+    // Slight upward drift to show "buy low sell high" trend
+    function nextCandle(prevClose: number): Candle {
+      const drift = (Math.random() - 0.46) * 22
+      const open = prevClose
+      const close = Math.max(height * 0.12, Math.min(height * 0.88, open + drift))
+      const bodySpan = Math.abs(close - open)
+      const wickMult = 0.3 + Math.random() * 0.5
+      const high = Math.max(open, close) + bodySpan * wickMult + Math.random() * 6
+      const low  = Math.min(open, close) - bodySpan * wickMult - Math.random() * 6
+      return {
+        open,
+        close,
+        high: Math.min(high, height * 0.08),
+        low:  Math.max(low,  height * 0.92),
+      }
+    }
+
+    function buildCandles() {
+      candles.length = 0
+      // Start mid-low then drift upward for a bullish backdrop
+      let price = height * 0.65
+      const count = Math.ceil(width / STEP) + 6
+      for (let i = 0; i < count; i++) {
+        const c = nextCandle(price)
+        price = c.close
+        candles.push(c)
       }
     }
 
     function resize() {
-      width = canvas!.width = canvas!.offsetWidth
+      width  = canvas!.width  = canvas!.offsetWidth
       height = canvas!.height = canvas!.offsetHeight
-      generatePoints()
+      buildCandles()
     }
 
-    function draw() {
-      if (!ctx || !canvas) return
+    // Throttle to ~40 fps on background canvas — smooth but cheap
+    let lastFrame = 0
+    function draw(ts: number) {
+      animRef.current = requestAnimationFrame(draw)
+      if (ts - lastFrame < 25) return   // ~40 fps cap
+      lastFrame = ts
+
+      if (!ctx) return
       ctx.clearRect(0, 0, width, height)
 
-      ctx.beginPath()
-      ctx.moveTo(0, points[0] ?? height * 0.5)
+      const shift = scrollOffset % STEP
 
-      for (let i = 0; i < points.length; i++) {
-        const x = i * 8 - (offset % 8)
-        ctx.lineTo(x, points[i])
+      for (let i = 0; i < candles.length; i++) {
+        const cx = i * STEP - shift
+        if (cx < -STEP * 2 || cx > width + STEP) continue
+
+        const c = candles[i]
+        const bullish   = c.close >= c.open
+        // Opacity kept subtle so text stays readable
+        const bodyColor = bullish
+          ? 'rgba(52, 211, 153, 0.28)'   // emerald-ish green
+          : 'rgba(239, 100, 100, 0.24)'  // soft red
+        const wickColor = bullish
+          ? 'rgba(52, 211, 153, 0.18)'
+          : 'rgba(239, 100, 100, 0.15)'
+
+        const bodyTop = Math.min(c.open, c.close)
+        const bodyH   = Math.max(Math.abs(c.close - c.open), 2)
+        const midX    = cx + BODY_W / 2
+
+        // Upper wick
+        ctx.beginPath()
+        ctx.moveTo(midX, c.high)
+        ctx.lineTo(midX, bodyTop)
+        ctx.strokeStyle = wickColor
+        ctx.lineWidth = 1
+        ctx.stroke()
+
+        // Lower wick
+        ctx.beginPath()
+        ctx.moveTo(midX, bodyTop + bodyH)
+        ctx.lineTo(midX, c.low)
+        ctx.strokeStyle = wickColor
+        ctx.lineWidth = 1
+        ctx.stroke()
+
+        // Body — slightly rounded
+        ctx.beginPath()
+        ctx.roundRect(cx, bodyTop, BODY_W, bodyH, 2)
+        ctx.fillStyle = bodyColor
+        ctx.fill()
+        // Border
+        ctx.strokeStyle = bullish
+          ? 'rgba(52, 211, 153, 0.45)'
+          : 'rgba(239, 100, 100, 0.35)'
+        ctx.lineWidth = 0.8
+        ctx.stroke()
       }
 
-      ctx.strokeStyle = 'rgba(201, 168, 76, 0.12)'
-      ctx.lineWidth = 1.5
-      ctx.stroke()
-
-      // Fill
-      ctx.lineTo(width, height)
-      ctx.lineTo(0, height)
-      ctx.closePath()
-
-      const gradient = ctx.createLinearGradient(0, 0, 0, height)
-      gradient.addColorStop(0, 'rgba(201, 168, 76, 0.06)')
-      gradient.addColorStop(1, 'rgba(201, 168, 76, 0)')
-      ctx.fillStyle = gradient
-      ctx.fill()
-
-      offset += 0.3
-      if (offset >= 8) {
-        offset = 0
-        points.shift()
-        let last = points[points.length - 1] ?? height * 0.5
-        last += (Math.random() - 0.48) * 12
-        last = Math.max(height * 0.2, Math.min(height * 0.8, last))
-        points.push(last)
+      // Subtle horizontal grid lines
+      ctx.strokeStyle = 'rgba(201,168,76,0.04)'
+      ctx.lineWidth = 1
+      for (let g = 0.2; g <= 0.8; g += 0.2) {
+        const y = Math.round(height * g) + 0.5
+        ctx.beginPath()
+        ctx.moveTo(0, y)
+        ctx.lineTo(width, y)
+        ctx.stroke()
       }
 
-      animRef.current = requestAnimationFrame(draw)
+      scrollOffset += 0.35
+
+      if (scrollOffset >= STEP) {
+        scrollOffset = 0
+        candles.shift()
+        const last = candles[candles.length - 1]
+        candles.push(nextCandle(last?.close ?? height * 0.5))
+      }
     }
 
     resize()
     const ro = new ResizeObserver(resize)
     ro.observe(canvas)
-    draw()
+    animRef.current = requestAnimationFrame(draw)
 
     return () => {
       if (animRef.current) cancelAnimationFrame(animRef.current)
@@ -130,9 +200,9 @@ export function Hero({ content = {} }: HeroProps) {
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden hero-grid"
       aria-label="Introduction"
     >
-      {/* Animated chart background — hidden on mobile for performance */}
+      {/* Candlestick chart background */}
       {!shouldReduceMotion && (
-        <div className="hidden sm:block absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 pointer-events-none">
           <ChartCanvas />
         </div>
       )}
